@@ -16,8 +16,18 @@ export default function loginPage(){
         password: password
       }
     }).then(data => {
-      const dataJson = JSON.stringify(data.data);
-      alert(`Server response ${dataJson}`);
+      const response = data.data[0] ?? data;
+      const keys = Object.keys(response);
+
+      if(keys.includes("u_name")){
+        // const { u_name, u_first_names, u_last_names, u_security_lvl } = response;
+        // alert(`Credentials ${u_name}, ${u_first_names}, ${u_last_names}, ${u_security_lvl}`);
+        // TODO: cambiar a que no sea con la sesion. Que se guarde en el servidor
+        sessionStorage.setItem("credentials", JSON.stringify(response));
+        // window.location("/pedidos/");
+      } else {
+        alert(`Error de inicio de sesion: ${response.data.message}`);
+      }
     });
   }
 
