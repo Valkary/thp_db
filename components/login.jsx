@@ -17,7 +17,12 @@ export default function loginPage(){
       }
     }).then(data => {
       const { credentials, api_token } = data.data;
-      console.log(credentials, api_token);
+
+      if(credentials === null || api_token === null) {
+        console.log("Inicio de sesión incorrecto");
+      } else {
+        console.log(credentials, api_token);
+      }
     });
   }
 

@@ -10,7 +10,6 @@ function makeConnection() {
 
   conn.connect((err) => {
     if (err) throw err;
-    console.log("Connected!");
   });
 
   return conn;

@@ -12,7 +12,7 @@ function getPassword(conn, username) {
 
 function compareHashes(password, hashed_pwd) {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(password, hashed_pwd, (error, result) => {
+    bcrypt.compare(password, hashed_pwd, (err, result) => {
       return err ? reject(err) : resolve(result);
     });
   });
@@ -20,8 +20,16 @@ function compareHashes(password, hashed_pwd) {
 
 function fetchCredentials(conn, username) {
   return new Promise((resolve, reject) => {
-    conn.query("SELECT u_first_names, u_last_names, u_security_lvl FROM thp_users WHERE u_name = ?", [username], (err, result) => {
+    conn.query("SELECT u_index, u_first_names, u_last_names FROM thp_users WHERE u_name = ?", [username], (err, result) => {
       return err ? reject(err) : resolve(result[0]);
+    });
+  });
+}
+
+function startSession(conn, user_index, key) {
+  return new Promise((resolve, reject) => {
+    conn.query(`INSERT INTO thp_sessions (session_key, session_start, session_user) VALUES ("${key}", CURRENT_TIMESTAMP(), ${user_index});`, (err, result) => {
+      return err ? reject(err) : resolve(true);
     });
   });
 }
@@ -35,20 +43,31 @@ const getCredentials = async (req, res) => {
 
   if(verifyHash){
     const credentials = await fetchCredentials(conn, username);
+    const { u_index, u_first_names, u_last_names } = credentials;
     const { apiKey, uuid } = createApiKey.create();
 
-    /*
-      TODO:
-        apiKey: queda expuesta del lado del cliente. Se va a utilizar para mantener a los usuarios loggeados
-        uuid: queda guardada en el servidor MySQL
+    const start_session = startSession(conn, u_index, uuid);
 
-        Para que el usuario pueda hacer uso del API va a tener que verificar su llave API con el uuid de la base de datos
-    */
-
+    if(start_session) {
+      return {
+        status: 200,
+        credentials: { u_first_names, u_last_names },
+        api_token: apiKey
+      }
+    } else {
+      return {
+        status: 200,
+        credentials: null,
+        api_token: null,
+        message: "Error al crear token de API, intentelo de nuevo"
+      }
+    }    
+  } else {
     return {
       status: 200,
-      credentials: credentials,
-      api_token: apiKey
+      credentials: null,
+      api_token: null,
+      message: "Nombre de usuario o contraseña equivocados"
     }
   }
 };
