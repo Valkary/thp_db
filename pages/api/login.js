@@ -1,25 +1,63 @@
 import { conn } from '../../connection';
+import bcrypt from 'bcrypt';
+import createApiKey from 'uuid-apikey';
 
-export default function getUsers(req, res) {
+function getPassword(conn, username) {
   return new Promise((resolve, reject) => {
-    if(req.method === "POST"){
-      try {
-        conn.query(`SELECT u_first_names, u_last_names, u_security_lvl, u_name FROM thp_users WHERE u_name = "${req.body.username}" AND u_pass = "${req.body.password}"`, (err, result) => { 
-          if (err) throw err; 
-          if(result.length === 0){
-            res.status(200).json({ "message": "Nombre de usuario o contraseña incorrectos" });
-          } else {
-            res.status(200).json(result);
-          }
-  
-          resolve();
-        });
-      } catch(error) {
-        res.status(error.status || 500).json({ message: error.message });
-      }
-    } else {
-      res.status(500).json({ message: "Metodo HTTP incorrecto! Solo se acepta POST" });
-      reject();
-    }
+    conn.query("SELECT u_pass FROM thp_users WHERE u_name = ?", [username], (err, result) => {
+      return err ? reject(err) : resolve(result[0].u_pass);
+    });
   });
+}
+
+function compareHashes(password, hashed_pwd) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, hashed_pwd, (error, result) => {
+      return err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+function fetchCredentials(conn, username) {
+  return new Promise((resolve, reject) => {
+    conn.query("SELECT u_first_names, u_last_names, u_security_lvl FROM thp_users WHERE u_name = ?", [username], (err, result) => {
+      return err ? reject(err) : resolve(result[0]);
+    });
+  });
+}
+
+const getCredentials = async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const hashed_pwd = await getPassword(conn, username);
+  const verifyHash = await compareHashes(password, hashed_pwd);
+
+  if(verifyHash){
+    const credentials = await fetchCredentials(conn, username);
+    const { apiKey, uuid } = createApiKey.create();
+
+    /*
+      TODO:
+        apiKey: queda expuesta del lado del cliente. Se va a utilizar para mantener a los usuarios loggeados
+        uuid: queda guardada en el servidor MySQL
+
+        Para que el usuario pueda hacer uso del API va a tener que verificar su llave API con el uuid de la base de datos
+    */
+
+    return {
+      status: 200,
+      credentials: credentials,
+      api_token: apiKey
+    }
+  }
 };
+
+export default function sendCredentials(req, res) {
+  return new Promise((resolve, reject) => {
+    getCredentials(req, res).then(result => {
+      res.status(200).send(result);
+      resolve();
+    });
+  });
+}
