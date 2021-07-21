@@ -30,18 +30,16 @@ export default function crearPedido() {
       }
 
       // Generar un nuevo pedido con el cliente seleccionado y credenciales del usuario
-      const numero_pedido = () => {
-        axios({
-          method: 'post',
-          url: '/api/pedidos/nuevoPedido',
-          data: {
-            cliente: clienteSeccionadoValue
-          }
-        }).then(data => {
-          const { message, order_index } = data;
-          console.log(message, order_index);
-        });
-      }
+      axios({
+        method: 'post',
+        url: '/api/pedidos/nuevoPedido',
+        data: {
+          cliente: clienteSeccionadoValue
+        }
+      }).then(data => {
+        const { message, order_index } = data.data;
+        console.log(message, order_index);
+      });
 
       /*
         TODO:
