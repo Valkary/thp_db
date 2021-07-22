@@ -1,4 +1,6 @@
 import { conn } from '../../../connection';
+
+// FIXME: cambiar a que el usuario sea dinámico con la sesión y agregarlo a todos los endpoints del API
 const usuario = 1;
 
 function insertOrder(conn, cliente) {
@@ -33,21 +35,18 @@ const verificarIndice = async (conn, cliente) => {
 }
 
 export default function crearNuevoPedido(req, res) {
+  console.log("* Generando orden de pedido");
   return new Promise((resolve, reject) => {
     const { cliente } = req.body;
     verificarIndice(conn, cliente).then(result => {
-      console.log(result);
       if(result !== 0) {
+        console.log(`* Contenido generado! Pedido no. ${result}`);
         res.status(200).send({
           message: "Orden de pedido creada en la base de datos!",
           order_index: result
         });
-        resolve();
-      } else {
-        console.log("Negada!");
-        reject();
+        resolve(true);
       }
     });
-    resolve();
   });
 }

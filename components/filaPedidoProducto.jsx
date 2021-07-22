@@ -1,13 +1,38 @@
 import { useState } from "react";
 import SelectorProductos from "../components/productos/selectorProductos";
 
-export default function crearPedido(props) {
+export default function crearPedido() {
   const [ cantProducto, setCantProducto ] = useState(1);
   
+  const handleChange = (evt) => {
+    const input_value = evt.target.value.toString();
+    console.log(input_value);
+    if(input_value){
+      setCantProducto(evt.target.value);
+    }
+  }
+
   return (
-    <div>
+    <div className="row_container" style={rowStyles.row_container}>
       <SelectorProductos mostrar={"clave"}></SelectorProductos>
-      <input className="cant-producto" type="number" min="1" step="1" value={cantProducto} value={cantProducto} onChange={evt => setCantProducto(evt.target.value)}></input>
+      <input 
+        className="cant_producto" 
+        type="number" 
+        min="1" 
+        step="1" 
+        value={cantProducto} 
+        onChange={evt => handleChange(evt)}
+      ></input>
     </div>
   );
+}
+
+const rowStyles = {
+  row_container: {
+    display: "grid",
+    gridTemplateColumns: "[ selector-pedido ] 85% [ input-cant ] 15%",
+    gridTemplateRows: "100%",
+    justifyItems: "stretch",
+    width: "100%",
+  },
 }

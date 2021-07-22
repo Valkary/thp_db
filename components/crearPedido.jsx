@@ -11,80 +11,127 @@ export default function crearPedido() {
     setContent([...content, <ProductRow key={content.length + 1}></ProductRow>]);
   }
 
-  const createOrder = () => {
-    const prodSelectArr = document.querySelectorAll(".prod-select");
-    const prodQuantArr = document.querySelectorAll(".cant-producto");
-    const clienteSeccionadoValue = document.querySelector(".client-select").value;
-    let valid = true;
+  const createOrder = async () => {
+    const product_array = document.querySelectorAll(".prod_select");
+    const quant_array = document.querySelectorAll(".cant_producto");
+    const client_value = document.querySelector(".client_select").value;
 
-    if(prodSelectArr.length === prodQuantArr.length){
-      let prod_quant_arr = [];
+    const orden_pedido = await generarOrdenPedido(product_array, quant_array, client_value);
 
-      for(let i = 0; i < prodQuantArr.length; i++) {
-        if(prodQuantArr[i].value >= 1 && valid){
-          prod_quant_arr.push([prodSelectArr[i].value, prodQuantArr[i].value]);
-        } else {
-          prod_quant_arr = false;
-          valid = false;
-        }
-      }
+    if(orden_pedido !== false){
+      const { message, order_index, prod_quant_arr } = orden_pedido;
+      const contenido_pedido = await generarContenidoPedido(order_index, prod_quant_arr);
 
-      // Generar un nuevo pedido con el cliente seleccionado y credenciales del usuario
-      axios({
-        method: 'post',
-        url: '/api/pedidos/nuevoPedido',
-        data: {
-          cliente: clienteSeccionadoValue
-        }
-      }).then(data => {
-        const { message, order_index } = data.data;
-        console.log(message, order_index);
-      });
-
-      /*
-        TODO:
-          1) Crear un nuevo pedido en la tabla thp_pedidos [fecha, cliente, estado, usuario_que_aprobo]
-          2) Crear registros del contenido del pedido creado en la tabla thp_pedidos_cont [producto, cantidad, pedido_index]
-      */
-
-      // Crear todos los registros del contenido del pedido
-      // if(prod_quant_arr !== false) {
-      //   let query_arr = [];
-
-      //   prod_quant_arr.forEach(pair => {
-      //     query_arr.push([...pair, pedido_index]);
-      //   });
-
-      //   console.log(query_arr);
-      // }
+      console.log(contenido_pedido);
+    } else {
+      alert("Error al crear la orden!");
     }
   }
 
   return (
-    <div>
+    <div className="pedidos_main" style={style_pedidos.pedidos_main}>
       <h3>Crear Pedido</h3>
-      <h5>Cliente</h5>
-      <div className="head-pedido">
+      <div className="head_pedido" style={style_pedidos.pedidos_head}>
+        <h5>Cliente: </h5>
         <ClientSelector></ClientSelector>
       </div>
-      <h5>Contenido del Pedido</h5>
-      <button onClick={addProductRow}>
-        <PlusSvg></PlusSvg>
-      </button>
-      <div className="cont-pedido">
-        <ProductRow key="0"></ProductRow>
-        { 
-          content.map(row => {
-            return row;
-          })
-        }
+      <div className="cont_pedido" style={style_pedidos.pedidos_cont}>
+        <h5>Contenido del Pedido</h5>
+        <button onClick={addProductRow}>
+          <PlusSvg></PlusSvg>
+        </button>
+        <div className="registros_pedido" style={style_pedidos.pedidos_reg}>
+          <ProductRow key="0"></ProductRow>
+          { 
+            content.map(row => {
+              return row;
+            })
+          }
+        </div>
       </div>
-      <div className="footer-pedido">
+      <div className="footer_pedido">
         <h5>Subtotal:</h5>
         <h5>IVA:</h5>
         <h5>Total (Sin descuentos):</h5>
-        <button id="btn-crear-pedido" onClick={createOrder}>Crear Pedido</button>
+        <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
       </div>
     </div>
   );
+}
+
+async function generarOrdenPedido(product_array, quant_array, client_value) {
+  return new Promise((resolve, reject) => {
+    let prod_quant_arr = [];
+    let valid = true;
+    console.log(product_array.length , quant_array.length);
+    if(product_array.length === quant_array.length){  
+      for(let i = 0; i < quant_array.length; i++) {
+        if(parseInt(quant_array[i].value, 10) !== NaN && quant_array[i].value >= 1 && valid){
+          prod_quant_arr.push([parseInt(product_array[i].value, 10), parseInt(quant_array[i].value, 10)]);
+        } else {
+          valid = false;
+          resolve(false);
+        }
+      }
+      
+      // Generar un nuevo pedido con el cliente seleccionado y credenciales del usuario
+      if(valid){
+        axios({
+          method: 'post',
+          url: '/api/pedidos/nuevoPedido',
+          data: {
+            cliente: client_value
+          }
+        }).then(data => {
+          const { message, order_index } = data.data;
+          resolve({ message, order_index, prod_quant_arr });
+        });
+      }
+    }
+  });
+}
+
+async function generarContenidoPedido(pedido_index, prod_quant_arr){
+  // Crear todos los registros del contenido del pedido
+  let query_arr = [];
+
+  prod_quant_arr.forEach(pair => {
+    query_arr.push([...pair, pedido_index]);
+  });
+
+  axios({
+    method: 'post',
+    url: '/api/pedidos/agregarContPedido',
+    data: {
+      contenido: query_arr
+    }
+  }).then(data => {
+    console.log(data.data);
+  });
+
+  return true;
+}
+
+const style_pedidos = {
+  pedidos_main: {
+    display: "flex",
+    width: "100%",
+    flexFlow: "column nowrap",
+    justifyContent: "center"
+  },
+  pedidos_head: {
+    display: "flex",
+    width: "100%",
+    flexFlow: "row nowrap",
+    alignItems: "flex-start",
+    height: "fit-content"
+  },
+  pedidos_cont: {
+    display: "grid",
+    justifyItems: "center",
+    width: "90%",
+  },
+  pedidos_reg: {
+    width: "90%"
+  }
 }
