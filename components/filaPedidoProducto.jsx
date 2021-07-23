@@ -30,7 +30,7 @@ export default function crearPedido() {
 const rowStyles = {
   row_container: {
     display: "grid",
-    gridTemplateColumns: "[ selector-pedido ] 85% [ input-cant ] 15%",
+    gridTemplateColumns: "[ selector-pedido ] 85% [ input-cant ] 10%",
     gridTemplateRows: "100%",
     justifyItems: "stretch",
     width: "100%",

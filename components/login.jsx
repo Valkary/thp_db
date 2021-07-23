@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function loginPage(){
   const [username, setUsername] = useState("");
@@ -16,12 +17,13 @@ export default function loginPage(){
         password: password
       }
     }).then(data => {
-      const { credentials, api_token } = data.data;
+      const { credentials } = data.data;
 
-      if(credentials === null || api_token === null) {
+      if(credentials === null) {
         console.log("Inicio de sesión incorrecto");
       } else {
-        console.log(credentials, api_token);
+        Cookies.set("api_key", credentials.apiToken, { expires: 1 });
+        axios.post("/api/verifyToken", { apiToken: Cookies.get("api_key") });
       }
     });
   }

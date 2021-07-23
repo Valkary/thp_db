@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductRow from "../components/filaPedidoProducto";
 import ClientSelector from "../components/clientes/selectorCliente";
 import PlusSvg from "../public/svgs/plus.svg";
+import Cookies from "js-cookie";
 
 export default function crearPedido() {
   const [ content, setContent ] = useState([]);
+  const [ verified, setVerified ] = useState(false);
+
+  useEffect(() => {
+    axios.post("/api/verifyToken", { apiKey: Cookies.get("api_key") }).then((result => {
+      console.log(result);
+      if(result.verified) setVerified(true);
+    }));
+  }, []);
+
+  if(!verified) {
+    return (
+      <div>No se ha iniciado sesión</div>
+    );
+  }
 
   const addProductRow = () => {
     setContent([...content, <ProductRow key={content.length + 1}></ProductRow>]);
@@ -41,10 +56,18 @@ export default function crearPedido() {
           <PlusSvg></PlusSvg>
         </button>
         <div className="registros_pedido" style={style_pedidos.pedidos_reg}>
-          <ProductRow key="0"></ProductRow>
+          <div className="reg_row_0" style={style_pedidos.reg_individual}>
+            <ProductRow key="0"></ProductRow>
+            <button key="del_btn_0" onClick={e => setContent(content.splice(0, 1))}>X</button>
+          </div>
           { 
             content.map(row => {
-              return row;
+              return (
+                <div className={`reg_row_${row.key}`} style={style_pedidos.reg_individual}>
+                  { row }
+                  <button key={`del_btn_${row.key}`} onClick={e => setContent(content.splice(row.key, 1))}>X</button>
+                </div>
+              );
             })
           }
         </div>
@@ -132,6 +155,11 @@ const style_pedidos = {
     width: "90%",
   },
   pedidos_reg: {
-    width: "90%"
+    width: "90%",
+  },
+  reg_individual: {
+    display: "grid",
+    gridTemplateColumns: "95% [ del-btn ] 5%",
+    justifyItems: "stretch",
   }
 }

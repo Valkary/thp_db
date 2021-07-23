@@ -1,6 +1,5 @@
 import { conn } from '../../connection';
 import bcrypt from 'bcrypt';
-import createApiKey from 'uuid-apikey';
 
 function getPassword(conn, username) {
   return new Promise((resolve, reject) => {
@@ -20,7 +19,7 @@ function compareHashes(password, hashed_pwd) {
 
 function fetchCredentials(conn, username) {
   return new Promise((resolve, reject) => {
-    conn.query("SELECT u_index, u_first_names, u_last_names FROM thp_users WHERE u_name = ?", [username], (err, result) => {
+    conn.query("SELECT u_index, u_first_names, u_last_names, u_api_key FROM thp_users WHERE u_name = ?", [username], (err, result) => {
       return err ? reject(err) : resolve(result[0]);
     });
   });
@@ -39,34 +38,28 @@ const getCredentials = async (req, res) => {
   const password = req.body.password;
 
   const hashed_pwd = await getPassword(conn, username);
+  console.log("* Usuario encontrado!");
   const verifyHash = await compareHashes(password, hashed_pwd);
-
+  console.log("* Contraseña verificada!");
+  
   if(verifyHash){
     const credentials = await fetchCredentials(conn, username);
-    const { u_index, u_first_names, u_last_names } = credentials;
-    const { apiKey, uuid } = createApiKey.create();
+    console.log("* Fetching credentials");
+    const { u_index, u_first_names, u_last_names, u_api_key } = credentials;
+    const [ firstNames, lastNames, apiToken ] = [ u_first_names, u_last_names, u_api_key ];
+    
+    // const start_session = startSession(conn, u_index, u_api_key);
+    // console.log("* Sesion creada en la base de datos!");
+    console.log("* Enviando credenciales de la sesion...");
 
-    const start_session = startSession(conn, u_index, uuid);
-
-    if(start_session) {
-      return {
-        status: 200,
-        credentials: { u_first_names, u_last_names },
-        api_token: apiKey
-      }
-    } else {
-      return {
-        status: 200,
-        credentials: null,
-        api_token: null,
-        message: "Error al crear token de API, intentelo de nuevo"
-      }
-    }    
+    return {
+      status: 200,
+      credentials: { firstNames, lastNames, apiToken },
+    } 
   } else {
     return {
       status: 200,
       credentials: null,
-      api_token: null,
       message: "Nombre de usuario o contraseña equivocados"
     }
   }
