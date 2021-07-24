@@ -9,9 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^5.5.0",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "js-cookie": "^2.2.1",
+    "mysql": "^2.18.1",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "uuid-apikey": "^1.5.3"
   },
   "devDependencies": {
     "eslint": "7.31.0",
