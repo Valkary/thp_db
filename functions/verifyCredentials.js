@@ -1,4 +1,4 @@
-import { conn } from "../../connection";
+import { conn } from "../thp_db/connection";
 import uuidApikey from "uuid-apikey";
 
 function searchToken(token) {
@@ -16,26 +16,24 @@ async function matchAndVerifyToken(cookie) {
   return { verified: true, security_lvl: token[0].u_security_lvl };
 }
 
-export default function verifySession(req, res) {
+export default function verifySession(cookie) {
   return new Promise((resolve, reject) => {
-    if(req.method === "POST") {
-      const session_cookie = req.body.apiKey;
+    const session_cookie = cookie;
+    
+    if(session_cookie !== null) {
       console.log("* Verificando token...");
       matchAndVerifyToken(session_cookie).then(result => {
         if(result.verified){
           console.log("* Token verificado. Sesión correcta");
-          res.status(200).json({ verified: true, message: "Sesion verificada" });
-          resolve()
+          return resolve({ verified: true, security_lvl: result.security_lvl, message: "Sesion verificada" });
         } else {
           console.log("* Token incorrecto. Sesión denegada");
-          res.status(401).json({ verified: false, message: "No se ha iniciado sesión en el sistema!" });
-          reject();
+          return resolve({ verified: false, security_lvl: 9999, message: "No se ha iniciado sesión en el sistema!" });
         }
       });
     } else {
-      console.log("* Método http incorrecto");
-      res.status(405).json({ verified: false, message: "Metodo incorrecto" });
-      reject();
+      console.log("* Token incorrecto. Sesión denegada");
+      return resolve({ verified: false, security_lvl: 9999, message: "No se ha iniciado sesión en el sistema!" });
     }
   });
 }

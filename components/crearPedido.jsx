@@ -1,29 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import ProductRow from "../components/filaPedidoProducto";
 import ClientSelector from "../components/clientes/selectorCliente";
 import PlusSvg from "../public/svgs/plus.svg";
-import Cookies from "js-cookie";
 
 export default function crearPedido() {
-  const [ content, setContent ] = useState([]);
-  const [ verified, setVerified ] = useState(false);
-
-  useEffect(() => {
-    axios.post("/api/verifyToken", { apiKey: Cookies.get("api_key") }).then((result => {
-      console.log(result);
-      if(result.verified) setVerified(true);
-    }));
-  }, []);
-
-  if(!verified) {
-    return (
-      <div>No se ha iniciado sesión</div>
-    );
-  }
+  const [ content, setContent ] = useState([<ProductRow key="0"></ProductRow>]);
 
   const addProductRow = () => {
-    setContent([...content, <ProductRow key={content.length + 1}></ProductRow>]);
+    setContent([...content, <ProductRow key={content.length}></ProductRow>]);
+  }
+
+  const removeRow = (row_key) => {
+    let tmp_content = content;
+    for(let i = 0; i < content.length; i++) {
+      if(content[i].key === row_key) {
+        tmp_content.splice(i, 1);
+      }
+    }
+
+    setContent([...tmp_content]);
   }
 
   const createOrder = async () => {
@@ -37,7 +33,8 @@ export default function crearPedido() {
       const { message, order_index, prod_quant_arr } = orden_pedido;
       const contenido_pedido = await generarContenidoPedido(order_index, prod_quant_arr);
 
-      console.log(contenido_pedido);
+      alert(`${message}\nOrden de ${contenido_pedido} productos agregado a la base de datos de manera satisfactoria`);
+      setContent([]);
     } else {
       alert("Error al crear la orden!");
     }
@@ -57,15 +54,13 @@ export default function crearPedido() {
         </button>
         <div className="registros_pedido" style={style_pedidos.pedidos_reg}>
           <div className="reg_row_0" style={style_pedidos.reg_individual}>
-            <ProductRow key="0"></ProductRow>
-            <button key="del_btn_0" onClick={e => setContent(content.splice(0, 1))}>X</button>
           </div>
           { 
             content.map(row => {
               return (
-                <div className={`reg_row_${row.key}`} style={style_pedidos.reg_individual}>
+                <div className={`reg_row_${row.key}`} key={`reg_row_${row.key}`} style={style_pedidos.reg_individual}>
                   { row }
-                  <button key={`del_btn_${row.key}`} onClick={e => setContent(content.splice(row.key, 1))}>X</button>
+                  <button key={`del_btn_${row.key}`} onClick={() => removeRow(row.key)}>X</button>
                 </div>
               );
             })
@@ -76,7 +71,9 @@ export default function crearPedido() {
         <h5>Subtotal:</h5>
         <h5>IVA:</h5>
         <h5>Total (Sin descuentos):</h5>
-        <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
+        {
+          content.length === 0 ? <button id="btn_crear_pedido" onClick={createOrder} disabled>Crear Pedido</button> : <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
+        }
       </div>
     </div>
   );
@@ -86,7 +83,7 @@ async function generarOrdenPedido(product_array, quant_array, client_value) {
   return new Promise((resolve, reject) => {
     let prod_quant_arr = [];
     let valid = true;
-    console.log(product_array.length , quant_array.length);
+
     if(product_array.length === quant_array.length){  
       for(let i = 0; i < quant_array.length; i++) {
         if(parseInt(quant_array[i].value, 10) !== NaN && quant_array[i].value >= 1 && valid){
@@ -116,23 +113,23 @@ async function generarOrdenPedido(product_array, quant_array, client_value) {
 
 async function generarContenidoPedido(pedido_index, prod_quant_arr){
   // Crear todos los registros del contenido del pedido
-  let query_arr = [];
+  return new Promise((resolve, reject) => {
+    let query_arr = [];
 
-  prod_quant_arr.forEach(pair => {
-    query_arr.push([...pair, pedido_index]);
+    prod_quant_arr.forEach(pair => {
+      query_arr.push([...pair, pedido_index]);
+    });
+
+    axios({
+      method: 'post',
+      url: '/api/pedidos/agregarContPedido',
+      data: {
+        contenido: query_arr
+      }
+    }).then(data => {
+      resolve(data.data.affectedRows);
+    });
   });
-
-  axios({
-    method: 'post',
-    url: '/api/pedidos/agregarContPedido',
-    data: {
-      contenido: query_arr
-    }
-  }).then(data => {
-    console.log(data.data);
-  });
-
-  return true;
 }
 
 const style_pedidos = {

@@ -36,6 +36,7 @@ function startSession(conn, user_index, key) {
 const getCredentials = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+  console.log(username, password);
 
   const hashed_pwd = await getPassword(conn, username);
   console.log("* Usuario encontrado!");
@@ -46,7 +47,7 @@ const getCredentials = async (req, res) => {
     const credentials = await fetchCredentials(conn, username);
     console.log("* Fetching credentials");
     const { u_index, u_first_names, u_last_names, u_api_key } = credentials;
-    const [ firstNames, lastNames, apiToken ] = [ u_first_names, u_last_names, u_api_key ];
+    const [ firstNames, lastNames, apiKey ] = [ u_first_names, u_last_names, u_api_key ];
     
     // const start_session = startSession(conn, u_index, u_api_key);
     // console.log("* Sesion creada en la base de datos!");
@@ -54,7 +55,7 @@ const getCredentials = async (req, res) => {
 
     return {
       status: 200,
-      credentials: { firstNames, lastNames, apiToken },
+      credentials: { firstNames, lastNames, apiKey },
     } 
   } else {
     return {

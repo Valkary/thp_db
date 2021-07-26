@@ -1,5 +1,5 @@
 import { conn } from '../../../connection';
-import axios from 'axios';
+import verifyToken from "../../../functions/verifyCredentials";
 
 function fetchWorkers() {
   return new Promise((resolve, reject) => {
@@ -9,20 +9,8 @@ function fetchWorkers() {
   });
 }
 
-function verifySession(token) {
-  return new Promise((resolve, reject) => {
-    axios.post("/api/verifyToken", { apiToken: token }).then(result => {
-      console.log(result);
-      return err ? reject(err) : resolve(result);
-    }).catch(err => {
-      console.log(err);
-      return err;
-    });
-  });
-}
-
 const verifyAndRequest = async (token) => {
-  const session = await verifySession(token);
+  const session = await verifyToken(token);
   
   if(session.verified) {
     const workers = await fetchWorkers();
@@ -34,10 +22,10 @@ const verifyAndRequest = async (token) => {
 }
 
 export default function getUsers(req, res) {
-  const apiToken = req.body.apiToken;
+  const apiToken = req.body.apiKey;
+
   return new Promise((resolve, reject) => {
     if(req.method === "POST"){
-      const apiToken = req.body.apiToken;
       console.log("* Verificando sesión");
 
       verifyAndRequest(apiToken).then(result => {
