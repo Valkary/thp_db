@@ -6,7 +6,6 @@ export default function crearPedido() {
   
   const handleChange = (evt) => {
     const input_value = evt.target.value.toString();
-    console.log(input_value);
     if(input_value){
       setCantProducto(evt.target.value);
     }

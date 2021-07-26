@@ -6,9 +6,11 @@ import PlusSvg from "../public/svgs/plus.svg";
 
 export default function crearPedido() {
   const [ content, setContent ] = useState([<ProductRow key="0"></ProductRow>]);
+  const [ highest, setHighest ] = useState(0);
 
   const addProductRow = () => {
-    setContent([...content, <ProductRow key={content.length}></ProductRow>]);
+    setHighest(highest + 1);
+    setContent([...content, <ProductRow key={highest + 1}></ProductRow>]);
   }
 
   const removeRow = (row_key) => {
@@ -68,11 +70,25 @@ export default function crearPedido() {
         </div>
       </div>
       <div className="footer_pedido">
-        <h5>Subtotal:</h5>
-        <h5>IVA:</h5>
-        <h5>Total (Sin descuentos):</h5>
+        <div className="cost_div" style={style_pedidos.cost_div}>
+          <span></span>
+          <h5>Subtotal:</h5>
+          <h5>$ 0.00</h5>
+        </div>
+        <div className="cost_div" style={style_pedidos.cost_div}>
+          <span></span>
+          <h5>IVA:</h5>
+          <h5>$ 0.00</h5>
+        </div>
+        <div className="cost_div" style={style_pedidos.cost_div}>
+          <span></span>
+          <h5>Total (Sin descuentos):</h5>
+          <h5>$ 0.00</h5>
+        </div>
         {
-          content.length === 0 ? <button id="btn_crear_pedido" onClick={createOrder} disabled>Crear Pedido</button> : <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
+          content.length === 0 ?
+            <button id="btn_crear_pedido" onClick={createOrder} disabled>Crear Pedido</button> :
+            <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
         }
       </div>
     </div>
@@ -157,6 +173,11 @@ const style_pedidos = {
   reg_individual: {
     display: "grid",
     gridTemplateColumns: "95% [ del-btn ] 5%",
+    justifyItems: "stretch",
+  },
+  cost_div: {
+    display: "grid",
+    gridTemplateColumns: "[ blank ] 65% [ title ] 30% [ del-btn ] 5%",
     justifyItems: "stretch",
   }
 }
