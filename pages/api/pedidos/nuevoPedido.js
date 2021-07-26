@@ -1,4 +1,4 @@
-import { conn } from '../../../connection';
+import { conn } from '../../../functions/connection';
 
 // FIXME: cambiar a que el usuario sea dinámico con la sesión y agregarlo a todos los endpoints del API
 const usuario = 1;

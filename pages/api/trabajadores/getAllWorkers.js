@@ -1,4 +1,4 @@
-import { conn } from '../../../connection';
+import { conn } from '../../../functions/connection';
 import verifyToken from "../../../functions/verifyCredentials";
 
 function fetchWorkers() {

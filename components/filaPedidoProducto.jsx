@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SelectorProductos from "../components/productos/selectorProductos";
+import SelectorProductos from "./productos/selectorProductos";
 
 export default function crearPedido() {
   const [ cantProducto, setCantProducto ] = useState(1);

@@ -1,4 +1,4 @@
-import { conn } from "../thp_db/connection";
+import { conn } from "../functions/connection";
 import uuidApikey from "uuid-apikey";
 
 function searchToken(token) {

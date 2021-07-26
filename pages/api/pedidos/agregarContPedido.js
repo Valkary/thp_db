@@ -1,4 +1,4 @@
-import { conn } from "../../../connection";
+import { conn } from "../../../functions/connection";
 
 async function insertarFilasContenido(conn, data) {
   return new Promise((resolve, reject) => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import ProductRow from "../components/filaPedidoProducto";
-import ClientSelector from "../components/clientes/selectorCliente";
+import ProductRow from "./filaPedidoProducto";
+import ClientSelector from "./clientes/selectorCliente";
 import PlusSvg from "../public/svgs/plus.svg";
 
 export default function crearPedido() {

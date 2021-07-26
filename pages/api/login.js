@@ -1,4 +1,4 @@
-import { conn } from '../../connection';
+import { conn } from '../../functions/connection';
 import bcrypt from 'bcrypt';
 
 function getPassword(conn, username) {
@@ -25,18 +25,9 @@ function fetchCredentials(conn, username) {
   });
 }
 
-function startSession(conn, user_index, key) {
-  return new Promise((resolve, reject) => {
-    conn.query(`INSERT INTO thp_sessions (session_key, session_start, session_user) VALUES ("${key}", CURRENT_TIMESTAMP(), ${user_index});`, (err, result) => {
-      return err ? reject(err) : resolve(true);
-    });
-  });
-}
-
 const getCredentials = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  console.log(username, password);
 
   const hashed_pwd = await getPassword(conn, username);
   console.log("* Usuario encontrado!");

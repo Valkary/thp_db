@@ -1,5 +1,5 @@
 import CrearPedido from "../components/crearPedido";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
