@@ -16,6 +16,10 @@ async function makeConnection() {
       return null;
     } else {
       console.log("Connected!");
+      connection.query("SHOW TABLES", (err, result) => {
+        if (err) throw err;
+        console.log(result);
+      }); 
       return connection;
     }
   })
