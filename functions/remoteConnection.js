@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 async function makeConnection() {
   const connection = mysql.createConnection({
@@ -13,6 +13,7 @@ async function makeConnection() {
     if(err) {
       console.log(err);
       console.log("Not connected");
+      return null;
     } else {
       console.log("Connected!");
       return connection;
