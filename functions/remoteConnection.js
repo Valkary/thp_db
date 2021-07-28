@@ -10,9 +10,13 @@ async function makeConnection() {
   });
 
   connection.connect((err) => {
-    if (err) throw err;
-    console.log("Connected!");
-    return connection;
+    if(err) {
+      console.log(err);
+      console.log("Not connected");
+    } else {
+      console.log("Connected!");
+      return connection;
+    }
   })
 }
 
