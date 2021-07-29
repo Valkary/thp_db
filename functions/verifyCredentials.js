@@ -1,9 +1,9 @@
-import { conn } from "../connection";
+import { conn } from "./remoteConnection";
 import uuidApikey from "uuid-apikey";
 
 function searchToken(token) {
   return new Promise((resolve, reject) => {
-    conn.query(`SELECT u_security_lvl FROM thp_users WHERE u_uuid = ?`, token, (err, result) => {
+    conn.query(`SELECT u_index FROM thp_users WHERE u_uuid = ?`, token, (err, result) => {
       return err ? reject(err) : resolve(result);
     });
   });
@@ -13,7 +13,7 @@ async function matchAndVerifyToken(cookie) {
   const cookie_to_uuid = uuidApikey.toUUID(cookie);
   const token = await searchToken(cookie_to_uuid);
 
-  return { verified: true, security_lvl: token[0].u_security_lvl };
+  return { verified: true, u_index: token[0].u_index };
 }
 
 export default function verifySession(cookie) {
@@ -25,15 +25,15 @@ export default function verifySession(cookie) {
       matchAndVerifyToken(session_cookie).then(result => {
         if(result.verified){
           console.log("* Token verificado. Sesión correcta");
-          return resolve({ verified: true, security_lvl: result.security_lvl, message: "Sesion verificada" });
+          return resolve({ verified: true, u_index: result.u_index, message: "Sesion verificada" });
         } else {
           console.log("* Token incorrecto. Sesión denegada");
-          return resolve({ verified: false, security_lvl: 9999, message: "No se ha iniciado sesión en el sistema!" });
+          return resolve({ verified: false, u_index: 9999, message: "No se ha iniciado sesión en el sistema!" });
         }
       });
     } else {
       console.log("* Token incorrecto. Sesión denegada");
-      return resolve({ verified: false, security_lvl: 9999, message: "No se ha iniciado sesión en el sistema!" });
+      return resolve({ verified: false, u_index: 9999, message: "No se ha iniciado sesión en el sistema!" });
     }
   });
 }

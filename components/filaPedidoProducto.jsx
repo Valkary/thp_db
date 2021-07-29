@@ -1,12 +1,11 @@
 import { useState } from "react";
-import SelectorProductos from "../components/productos/selectorProductos";
+import SelectorProductos from "./productos/selectorProductos";
 
 export default function crearPedido() {
   const [ cantProducto, setCantProducto ] = useState(1);
   
   const handleChange = (evt) => {
     const input_value = evt.target.value.toString();
-    console.log(input_value);
     if(input_value){
       setCantProducto(evt.target.value);
     }

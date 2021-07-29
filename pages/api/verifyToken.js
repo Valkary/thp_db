@@ -1,4 +1,4 @@
-import { conn } from "../../connection";
+import { conn } from "../../functions/remoteConnection";
 import uuidApikey from "uuid-apikey";
 
 function searchToken(token) {
@@ -24,11 +24,11 @@ export default function verifySession(req, res) {
       matchAndVerifyToken(session_cookie).then(result => {
         if(result.verified){
           console.log("* Token verificado. Sesión correcta");
-          res.status(200).json({ verified: true, security_lvl: result.security_lvl, message: "Sesion verificada" });
+          res.status(200).json({ verified: true, message: "Sesion verificada" });
           resolve()
         } else {
           console.log("* Token incorrecto. Sesión denegada");
-          res.status(401).json({ verified: false, security_lvl: 9999, message: "No se ha iniciado sesión en el sistema!" });
+          res.status(401).json({ verified: false, message: "No se ha iniciado sesión en el sistema!" });
           reject();
         }
       });

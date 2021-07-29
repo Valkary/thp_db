@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 export default function loginPage(){
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
@@ -22,8 +24,14 @@ export default function loginPage(){
       if(credentials === null) {
         console.log("Inicio de sesión incorrecto");
       } else {
-        Cookies.set("api_key", credentials.apiToken, { expires: 1 });
-        axios.post("/api/verifyToken", { apiToken: Cookies.get("api_key") });
+        Cookies.set("api_key", credentials.apiKey, { expires: 1 });
+        axios.post("/api/verifyToken", { apiKey: Cookies.get("api_key") }).then(result => {
+          if(result.data.verified) {
+            router.push("/pedidos");
+          } else {
+            alert("Yo que se... no te verificaste");
+          }
+        });
       }
     });
   }

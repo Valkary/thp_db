@@ -1,4 +1,4 @@
-import { conn } from '../../connection';
+import { conn } from "../../functions/remoteConnection";
 import bcrypt from 'bcrypt';
 
 function getPassword(conn, username) {
@@ -25,14 +25,6 @@ function fetchCredentials(conn, username) {
   });
 }
 
-function startSession(conn, user_index, key) {
-  return new Promise((resolve, reject) => {
-    conn.query(`INSERT INTO thp_sessions (session_key, session_start, session_user) VALUES ("${key}", CURRENT_TIMESTAMP(), ${user_index});`, (err, result) => {
-      return err ? reject(err) : resolve(true);
-    });
-  });
-}
-
 const getCredentials = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -46,15 +38,13 @@ const getCredentials = async (req, res) => {
     const credentials = await fetchCredentials(conn, username);
     console.log("* Fetching credentials");
     const { u_index, u_first_names, u_last_names, u_api_key } = credentials;
-    const [ firstNames, lastNames, apiToken ] = [ u_first_names, u_last_names, u_api_key ];
+    const [ firstNames, lastNames, apiKey ] = [ u_first_names, u_last_names, u_api_key ];
     
-    // const start_session = startSession(conn, u_index, u_api_key);
-    // console.log("* Sesion creada en la base de datos!");
     console.log("* Enviando credenciales de la sesion...");
 
     return {
       status: 200,
-      credentials: { firstNames, lastNames, apiToken },
+      credentials: { firstNames, lastNames, apiKey },
     } 
   } else {
     return {
