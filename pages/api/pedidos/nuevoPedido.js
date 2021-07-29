@@ -1,11 +1,11 @@
-import { conn } from '../../../functions/connection';
+import { conn } from '../../../functions/remoteConnection';
+import verifyToken from "../../../functions/verifyCredentials";
 
 // FIXME: cambiar a que el usuario sea dinámico con la sesión y agregarlo a todos los endpoints del API
-const usuario = 1;
 
-function insertOrder(conn, cliente) {
+function insertOrder(conn, cliente, user_index) {
   return new Promise((resolve, reject) => {
-    conn.query(`INSERT INTO thp_pedidos (p_fecha, p_cliente, p_estado, p_usuario) VALUES (CURRENT_TIMESTAMP(), ${cliente}, 1, ${usuario});`, (err, result) => {
+    conn.query(`INSERT INTO thp_pedidos (p_fecha, p_cliente, p_estado, p_usuario) VALUES (CURRENT_TIMESTAMP(), ${cliente}, 1, ${user_index});`, (err, result) => {
       return err ? reject(err) : resolve(true);
     });
   });
@@ -19,8 +19,8 @@ function fetchLastOrderIndex(conn) {
   });
 }
 
-const verificarIndice = async (conn, cliente) => {
-  const insert_order = await insertOrder(conn, cliente);
+const verificarIndice = async (conn, cliente, user_index) => {
+  const insert_order = await insertOrder(conn, cliente, user_index);
 
   if(insert_order) {
     const order_index = await fetchLastOrderIndex(conn);
@@ -34,11 +34,25 @@ const verificarIndice = async (conn, cliente) => {
   }
 }
 
+const verifyAndRequest = async (token, conn, cliente) => {
+  console.log("* Verificando sesión");
+  const session = await verifyToken(token);
+  
+  if(session.verified) {
+    console.log("* Sesión verificada!");
+    const order_index = await verificarIndice(conn, cliente, session.u_index);
+
+    return order_index;
+  } else {
+    return false;
+  }
+}
+
 export default function crearNuevoPedido(req, res) {
   console.log("* Generando orden de pedido");
   return new Promise((resolve, reject) => {
-    const { cliente } = req.body;
-    verificarIndice(conn, cliente).then(result => {
+    const { cliente, apiKey } = req.body;
+    verifyAndRequest(apiKey, conn, cliente).then(result => {
       if(result !== 0) {
         console.log(`* Contenido generado! Pedido no. ${result}`);
         res.status(200).send({

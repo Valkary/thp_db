@@ -1,4 +1,4 @@
-import { conn } from "../../functions/connection";
+import { conn } from "../../functions/remoteConnection";
 import uuidApikey from "uuid-apikey";
 
 function searchToken(token) {

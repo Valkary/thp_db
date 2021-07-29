@@ -1,6 +1,6 @@
-const mysql = require("mysql2");
+const mysql = require("mysql");
 
-export default function makeConnection() {
+function makeConnection() {
   const connection = mysql.createConnection({
     user: process.env.REMOTE === "true" ? process.env.SCALINGO_USER : process.env.MYSQL_USERNAME,
     password: process.env.REMOTE === "true" ? process.env.SCALINGO_PWD : process.env.MYSQL_PASSWORD,
@@ -15,3 +15,5 @@ export default function makeConnection() {
 
   return connection;
 }
+
+export const conn = makeConnection();

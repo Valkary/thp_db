@@ -1,4 +1,4 @@
-import { conn } from '../../../functions/connection';
+import { conn } from '../../../functions/remoteConnection';
 
 export default function getUsers(req, res) {
   return new Promise((resolve, reject) => {

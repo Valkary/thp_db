@@ -1,4 +1,4 @@
-import { conn } from '../../../functions/connection';
+import { conn } from '../../../functions/remoteConnection';
 import verifyToken from "../../../functions/verifyCredentials";
 
 function fetchWorkers() {

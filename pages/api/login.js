@@ -1,4 +1,4 @@
-import { conn } from '../../functions/connection';
+import { conn } from "../../functions/remoteConnection";
 import bcrypt from 'bcrypt';
 
 function getPassword(conn, username) {
@@ -28,8 +28,6 @@ function fetchCredentials(conn, username) {
 const getCredentials = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-
-  console.log(username, password);
 
   const hashed_pwd = await getPassword(conn, username);
   console.log("* Usuario encontrado!");
