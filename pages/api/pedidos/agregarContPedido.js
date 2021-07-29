@@ -1,4 +1,5 @@
 import { conn } from "../../../functions/remoteConnection";
+import verifyToken from "../../../functions/verifyCredentials";
 
 async function insertarFilasContenido(conn, data) {
   return new Promise((resolve, reject) => {
@@ -10,12 +11,17 @@ async function insertarFilasContenido(conn, data) {
 
 export default function agregarContenidoPedido(req, res) {
   console.log("* Generando contenido del pedido");
-  return new Promise((resolve, reject) => {
-    const { contenido } = req.body;
-    insertarFilasContenido(conn, contenido).then(result => {
-      console.log(`* Contenido generado. Lineas insertadas a la base de datos: ${result}`);
-      res.status(200).send({ affectedRows: result });
+  return new Promise(async (resolve, reject) => {
+    const { contenido, apiKey } = req.body;
+
+    const session = await verifyToken(apiKey);
+    if(session.verified) {
+      const affected_rows = await insertarFilasContenido(conn, contenido);
+      res.status(200).send({ affectedRows: affected_rows });
       resolve(true);
-    });
+    } else {
+      res.status(200).send({ affectedRows: 0 });
+      resolve(false);
+    }
   });
 }

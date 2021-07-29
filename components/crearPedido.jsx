@@ -3,6 +3,7 @@ import axios from "axios";
 import ProductRow from "./filaPedidoProducto";
 import ClientSelector from "./clientes/selectorCliente";
 import PlusSvg from "../public/svgs/plus.svg";
+import Cookies from "js-cookie";
 
 export default function crearPedido() {
   const [ content, setContent ] = useState([<ProductRow key="0"></ProductRow>]);
@@ -25,15 +26,16 @@ export default function crearPedido() {
   }
 
   const createOrder = async () => {
+    const apiKey = Cookies.get("api_key");
     const product_array = document.querySelectorAll(".prod_select");
     const quant_array = document.querySelectorAll(".cant_producto");
     const client_value = document.querySelector(".client_select").value;
 
-    const orden_pedido = await generarOrdenPedido(product_array, quant_array, client_value);
+    const orden_pedido = await generarOrdenPedido(product_array, quant_array, client_value, apiKey);
 
     if(orden_pedido !== false){
       const { message, order_index, prod_quant_arr } = orden_pedido;
-      const contenido_pedido = await generarContenidoPedido(order_index, prod_quant_arr);
+      const contenido_pedido = await generarContenidoPedido(order_index, prod_quant_arr, apiKey);
 
       alert(`${message}\nOrden de ${contenido_pedido} productos agregado a la base de datos de manera satisfactoria`);
       setContent([]);
@@ -95,7 +97,7 @@ export default function crearPedido() {
   );
 }
 
-async function generarOrdenPedido(product_array, quant_array, client_value) {
+async function generarOrdenPedido(product_array, quant_array, client_value, apiKey) {
   return new Promise((resolve, reject) => {
     let prod_quant_arr = [];
     let valid = true;
@@ -116,7 +118,8 @@ async function generarOrdenPedido(product_array, quant_array, client_value) {
           method: 'post',
           url: '/api/pedidos/nuevoPedido',
           data: {
-            cliente: client_value
+            cliente: client_value,
+            apiKey: apiKey
           }
         }).then(data => {
           const { message, order_index } = data.data;
@@ -127,7 +130,7 @@ async function generarOrdenPedido(product_array, quant_array, client_value) {
   });
 }
 
-async function generarContenidoPedido(pedido_index, prod_quant_arr){
+async function generarContenidoPedido(pedido_index, prod_quant_arr, apiKey){
   // Crear todos los registros del contenido del pedido
   return new Promise((resolve, reject) => {
     let query_arr = [];
@@ -140,7 +143,8 @@ async function generarContenidoPedido(pedido_index, prod_quant_arr){
       method: 'post',
       url: '/api/pedidos/agregarContPedido',
       data: {
-        contenido: query_arr
+        contenido: query_arr,
+        apiKey: apiKey
       }
     }).then(data => {
       resolve(data.data.affectedRows);
