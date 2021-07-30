@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
 import CreateClient from "../components/clientes/createCliente"
+import CreateProduct from "../components/productos/createProduct";
 
 export default function Home() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function Home() {
     <>
       <CrearPedido></CrearPedido>
       <CreateClient></CreateClient>
+      <CreateProduct></CreateProduct>
     </>
   );
 }
