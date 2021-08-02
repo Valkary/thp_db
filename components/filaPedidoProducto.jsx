@@ -5,9 +5,11 @@ export default function crearPedido() {
   const [ cantProducto, setCantProducto ] = useState(1);
   
   const handleChange = (evt) => {
-    const input_value = evt.target.value.toString();
-    if(input_value){
-      setCantProducto(evt.target.value);
+    if(evt.target.value.match("[0-9\b]") || evt.target.value === "") {
+      const input_value = parseInt(evt.target.value);
+      console.log(input_value);
+    
+      setCantProducto(evt.target.value === "" ? "0" : input_value);
     }
   }
 
@@ -15,10 +17,7 @@ export default function crearPedido() {
     <div className="row_container" style={rowStyles.row_container}>
       <SelectorProductos mostrar={"clave"}></SelectorProductos>
       <input 
-        className="cant_producto" 
-        type="number" 
-        min="1" 
-        step="1" 
+        className="cant_producto"
         value={cantProducto} 
         onChange={evt => handleChange(evt)}
       ></input>

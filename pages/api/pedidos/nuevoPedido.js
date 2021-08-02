@@ -1,8 +1,6 @@
 import { conn } from '../../../functions/remoteConnection';
 import verifyToken from "../../../functions/verifyCredentials";
 
-// FIXME: cambiar a que el usuario sea dinámico con la sesión y agregarlo a todos los endpoints del API
-
 function insertOrder(conn, cliente, user_index) {
   return new Promise((resolve, reject) => {
     conn.query(`INSERT INTO thp_pedidos (p_fecha, p_cliente, p_estado, p_usuario) VALUES (CURRENT_TIMESTAMP(), ${cliente}, 1, ${user_index});`, (err, result) => {

@@ -27,7 +27,8 @@ export default function loginPage(){
         Cookies.set("api_key", credentials.apiKey, { expires: 1 });
         axios.post("/api/verifyToken", { apiKey: Cookies.get("api_key") }).then(result => {
           if(result.data.verified) {
-            router.push("/pedidos");
+            // router.push("/pedidos");
+            router.push("/produccion");
           } else {
             alert("Yo que se... no te verificaste");
           }
