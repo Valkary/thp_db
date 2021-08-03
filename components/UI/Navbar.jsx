@@ -5,7 +5,7 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <Flex color="white">
+    <Flex direction="row">
       <Button flex={1} colorScheme="blue" variant="solid" onClick={() => router.push("/produccion")}>
         <Text>Producción</Text>
       </Button>  

@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Navbar from "../components/UI/Navbar";
+import { Flex } from "@chakra-ui/layout";
 
 export default function Home() {
   const router = useRouter();
@@ -23,9 +24,9 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <Flex direction="column">
       <CrearPedido></CrearPedido>
       <Navbar></Navbar>
-    </>
+    </Flex>
   );
 }

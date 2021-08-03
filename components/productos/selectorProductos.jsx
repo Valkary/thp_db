@@ -5,7 +5,7 @@ import { Select, Text } from "@chakra-ui/react"
 export default function crearPedidos(props) {
   const [ productos, setProductos ] = useState([]);
   const [ selectedProd, setSelectedProd ] = useState(1);
-  const [ selectedProdName, setSelectedProdName ] = useState();
+  const [ selectedProdName, setSelectedProdName ] = useState("");
 
   useEffect(() => {
     axios({
@@ -16,9 +16,9 @@ export default function crearPedidos(props) {
       setProductos(response);
 
       if(props.mostrar === "nombre") {
-        setSelectedProdName(response[0].prod_name);
-      } else if(props.mostrar === "clave") {
         setSelectedProdName(response[0].prod_key);
+      } else if(props.mostrar === "clave") {
+        setSelectedProdName(response[0].prod_name);
       }
     });
   }, []);
@@ -26,7 +26,15 @@ export default function crearPedidos(props) {
   if(props.mostrar === "nombre"){
     return (
       <div className="selector_container">
-        <Select variant="flushed" onChange={e => setSelectedProd(e.target.value)} className="prod_select">
+        <Select 
+          variant="flushed" 
+          className="prod_select"
+          onChange={e => {
+              setSelectedProd(e.target.value);
+              setSelectedProdName(productos[e.target.value - 1].prod_key);
+            }
+          } 
+        >
           { 
             productos.map(producto => {
               return (
@@ -34,7 +42,6 @@ export default function crearPedidos(props) {
                   key={producto.prod_index} 
                   value={producto.prod_index}
                   name={producto.prod_key}
-                  onClick={e => setSelectedProdName(e.target.attributes.name.value)} 
                 >
                   {producto.prod_name}
                 </option>
@@ -48,7 +55,15 @@ export default function crearPedidos(props) {
   } else if(props.mostrar === "clave"){
     return (
       <div className="selector_container" style={selectorStyles.selector_container}>
-        <Select variant="flushed" onChange={e => setSelectedProd(e.target.value)} className="prod_select">
+        <Select 
+          variant="flushed" 
+          className="prod_select"
+          onChange={e => {
+              setSelectedProd(e.target.value);
+              setSelectedProdName(productos[e.target.value - 1].prod_name);
+            }
+          } 
+        >
           { 
             productos.map(producto => {
               return (
@@ -56,7 +71,6 @@ export default function crearPedidos(props) {
                   key={producto.prod_index} 
                   value={producto.prod_index}
                   name={producto.prod_name}
-                  onClick={e => setSelectedProdName(e.target.attributes.name.value)} 
                 >
                   {producto.prod_key}
                 </option>

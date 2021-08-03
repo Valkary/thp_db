@@ -150,37 +150,3 @@ async function generarContenidoPedido(pedido_index, prod_quant_arr, apiKey){
     });
   });
 }
-
-const style_pedidos = {
-  pedidos_main: {
-    display: "flex",
-    width: "100%",
-    flexFlow: "column nowrap",
-    justifyContent: "center"
-  },
-  pedidos_head: {
-    display: "flex",
-    width: "100%",
-    flexFlow: "row nowrap",
-    alignItems: "flex-start",
-    height: "fit-content"
-  },
-  pedidos_cont: {
-    display: "grid",
-    justifyItems: "center",
-    width: "90%",
-  },
-  pedidos_reg: {
-    width: "90%",
-  },
-  reg_individual: {
-    display: "grid",
-    gridTemplateColumns: "95% [ del-btn ] 5%",
-    justifyItems: "stretch",
-  },
-  cost_div: {
-    display: "grid",
-    gridTemplateColumns: "[ blank ] 65% [ title ] 30% [ del-btn ] 5%",
-    justifyItems: "stretch",
-  }
-}
