@@ -3,8 +3,7 @@ import { useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
-import CreateClient from "../components/clientes/createCliente"
-import CreateProduct from "../components/productos/createProduct";
+import Navbar from "../components/UI/Navbar";
 
 export default function Home() {
   const router = useRouter();
@@ -26,8 +25,7 @@ export default function Home() {
   return (
     <>
       <CrearPedido></CrearPedido>
-      <CreateClient></CreateClient>
-      <CreateProduct></CreateProduct>
+      <Navbar></Navbar>
     </>
   );
 }

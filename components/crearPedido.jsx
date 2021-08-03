@@ -2,8 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import ProductRow from "./filaPedidoProducto";
 import ClientSelector from "./clientes/selectorCliente";
-import PlusSvg from "../public/svgs/plus.svg";
 import Cookies from "js-cookie";
+import { Text, Heading  } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/button";
+import { Flex, Spacer } from "@chakra-ui/react"
+import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { HStack, VStack } from "@chakra-ui/react"
 
 export default function crearPedido() {
   const [ content, setContent ] = useState([<ProductRow key="0"></ProductRow>]);
@@ -45,55 +49,50 @@ export default function crearPedido() {
   }
 
   return (
-    <div className="pedidos_main" style={style_pedidos.pedidos_main}>
-      <h3>Crear Pedido</h3>
-      <div className="head_pedido" style={style_pedidos.pedidos_head}>
-        <h5>Cliente: </h5>
+    <VStack className="pedidos_main" width="100%">
+      <Heading as="h1" size="2xl" isTruncated>Crear Pedido</Heading>
+      <VStack className="head_pedido">
+        <Text>Cliente: </Text>
         <ClientSelector></ClientSelector>
-      </div>
-      <div className="cont_pedido" style={style_pedidos.pedidos_cont}>
-        <h5>Contenido del Pedido</h5>
-        <button onClick={addProductRow}>
-          <PlusSvg></PlusSvg>
-        </button>
-        <div className="registros_pedido" style={style_pedidos.pedidos_reg}>
-          <div className="reg_row_0" style={style_pedidos.reg_individual}>
-          </div>
+      </VStack>
+      <VStack className="cont_pedido" width="80%">
+        <Heading as="h5" size="1xl" isTruncated>Contenido del Pedido</Heading>
+        <Button onClick={addProductRow} leftIcon={<PlusSquareIcon></PlusSquareIcon>}></Button>
+        <VStack className="registros_pedido" width="100%">
           { 
             content.map(row => {
               return (
-                <div className={`reg_row_${row.key}`} key={`reg_row_${row.key}`} style={style_pedidos.reg_individual}>
+                <HStack className={`reg_row_${row.key}`} key={`reg_row_${row.key}`} width="100%">
                   { row }
-                  <button key={`del_btn_${row.key}`} onClick={() => removeRow(row.key)}>X</button>
-                </div>
+                  <Button key={`del_btn_${row.key}`} onClick={() => removeRow(row.key)} leftIcon={<DeleteIcon></DeleteIcon>}></Button>
+                </HStack>
               );
             })
           }
-        </div>
-      </div>
-      <div className="footer_pedido">
-        <div className="cost_div" style={style_pedidos.cost_div}>
-          <span></span>
-          <h5>Subtotal:</h5>
-          <h5>$ 0.00</h5>
-        </div>
-        <div className="cost_div" style={style_pedidos.cost_div}>
-          <span></span>
-          <h5>IVA:</h5>
-          <h5>$ 0.00</h5>
-        </div>
-        <div className="cost_div" style={style_pedidos.cost_div}>
-          <span></span>
-          <h5>Total (Sin descuentos):</h5>
-          <h5>$ 0.00</h5>
-        </div>
-        {
-          content.length === 0 ?
-            <button id="btn_crear_pedido" onClick={createOrder} disabled>Crear Pedido</button> :
-            <button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</button>
-        }
-      </div>
-    </div>
+        </VStack>
+      </VStack>
+      <Flex direction="column" className="footer_pedido" width="80%">
+        <VStack width="40%" justify="flex-end" align="flex-end" width="100%">
+          <HStack className="cost_div" justify="flex-end">
+            <div>Subtotal:</div>
+            <div>$ 0.00</div>
+          </HStack>
+          <HStack className="cost_div" justify="flex-end">
+            <Text>IVA:</Text>
+            <Text>$ 0.00</Text>
+          </HStack>
+          <HStack className="cost_div" justify="flex-end">
+            <Text>Total (Sin descuentos):</Text>
+            <Text>$ 0.00</Text>
+          </HStack>
+        </VStack>
+      </Flex>
+      {
+        content.length === 0 ?
+          <Button id="btn_crear_pedido" onClick={createOrder} disabled>Crear Pedido</Button> :
+          <Button id="btn_crear_pedido" onClick={createOrder}>Crear Pedido</Button>
+      }
+    </VStack>
   );
 }
 

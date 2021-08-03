@@ -4,6 +4,7 @@ import ProgramacionProduccion from "../components/produccion/programacionProducc
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Navbar from "../components/UI/Navbar";
 
 function organizeArr(result) {
   const fetch_pedidos = result.data;
@@ -63,11 +64,12 @@ export default function produccion() {
   }, []);
 
   return (
-    <>
+    <div>
       <h1>Produccion</h1>
       <Pedidos api_key={apiKey} pedidos={pedidos}></Pedidos>
       <PedidosCodigo api_key={apiKey}></PedidosCodigo>
       <ProgramacionProduccion api_key={apiKey} pedidos={pedidosProd}></ProgramacionProduccion>
-    </>
+      <Navbar></Navbar>
+    </div>
   );
 }

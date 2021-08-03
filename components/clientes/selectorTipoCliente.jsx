@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { Select } from "@chakra-ui/select";
 
 export default function selectorTipoCliente() {
   const [ tiposClientes, setTiposClientes ] = useState([]);
@@ -13,12 +14,12 @@ export default function selectorTipoCliente() {
   }, []);
 
   return (
-    <select name="selector_tipo_cliente" id="selector_tipo_cliente">
+    <Select variant="flushed" name="selector_tipo_cliente" id="selector_tipo_cliente">
     {
       tiposClientes.map(tipo_cliente => {
         return <option value={tipo_cliente.tipo_index} key={tipo_cliente.tipo_index}>{tipo_cliente.tipo_nombre}</option>
       })
     }
-    </select>
+    </Select>
   )
 }

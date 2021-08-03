@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function inputNumber({ key, max, min, val }) {
+export default function inputNumber({ max, min, val }) {
   const [ quant, setQuant ] = useState(val);
 
   const handleChange = (evt) => {
@@ -14,7 +14,6 @@ export default function inputNumber({ key, max, min, val }) {
   return (
     <input 
       type="number" 
-      key={key}
       max={max}
       min={min} 
       value={quant} 

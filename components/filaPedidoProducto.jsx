@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SelectorProductos from "./productos/selectorProductos";
+import { Input } from "@chakra-ui/react"
 
 export default function crearPedido() {
   const [ cantProducto, setCantProducto ] = useState(1);
@@ -16,11 +17,11 @@ export default function crearPedido() {
   return (
     <div className="row_container" style={rowStyles.row_container}>
       <SelectorProductos mostrar={"clave"}></SelectorProductos>
-      <input 
+      <Input variant="flushed"
         className="cant_producto"
         value={cantProducto} 
         onChange={evt => handleChange(evt)}
-      ></input>
+      ></Input>
     </div>
   );
 }

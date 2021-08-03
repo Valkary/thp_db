@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Select, Text } from "@chakra-ui/react"
 
 export default function crearPedidos(props) {
   const [ productos, setProductos ] = useState([]);
@@ -25,7 +26,7 @@ export default function crearPedidos(props) {
   if(props.mostrar === "nombre"){
     return (
       <div className="selector_container">
-        <select onChange={e => setSelectedProd(e.target.value)} className="prod_select">
+        <Select variant="flushed" onChange={e => setSelectedProd(e.target.value)} className="prod_select">
           { 
             productos.map(producto => {
               return (
@@ -40,14 +41,14 @@ export default function crearPedidos(props) {
               );
             })
           }
-        </select>
-        <span className="prod_select_description">{ selectedProdName }</span>
+        </Select>
+        <Text className="prod_select_description">{ selectedProdName }</Text>
       </div>
     )
   } else if(props.mostrar === "clave"){
     return (
       <div className="selector_container" style={selectorStyles.selector_container}>
-        <select onChange={e => setSelectedProd(e.target.value)} className="prod_select">
+        <Select variant="flushed" onChange={e => setSelectedProd(e.target.value)} className="prod_select">
           { 
             productos.map(producto => {
               return (
@@ -62,8 +63,8 @@ export default function crearPedidos(props) {
               );
             })
           }
-        </select>
-        <span className="prod_select_description">{ selectedProdName }</span>
+        </Select>
+        <Text className="prod_select_description">{ selectedProdName }</Text>
       </div>
     )
   }
