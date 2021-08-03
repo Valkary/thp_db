@@ -2,11 +2,16 @@ import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { Flex, Heading, Text, Button, Input } from "@chakra-ui/react";
+import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import Image from 'next/image';
+import LogoTHP from "../public/img/logo_thp_color.jpg";
 
 export default function loginPage(){
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const [ showPwd, setShowPwd ] = useState(false);
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
@@ -36,27 +41,78 @@ export default function loginPage(){
     });
   }
 
+  const hide_show_pwd = () => {
+    showPwd ? setShowPwd(false) : setShowPwd(true);
+  }
+
   return (
-    <>
-      <div className="wrapper">
-      <h1>Sistema de Control de Producción THP</h1>
-      <div className="login-wrapper">
-        <h1>Inicie Sesion</h1>
-        <form onSubmit={handleSubmit}>
-          <label>
-            <p>Nombre de usuario</p>
-            <input type="text" onChange={e => setUsername(e.target.value)}/>
-          </label>
-          <label>
-            <p>Contraseña</p>
-            <input type="password" onChange={e => setPassword(e.target.value)}/>
-          </label>
-          <div>
-            <button type="submit" value="Submit">Submit</button>
-          </div>
-        </form>
-        </div>
-      </div>
-    </>
+    <Flex 
+      height="100vh" 
+      width="100vw" 
+      direction="column"
+      justify="center" 
+      align="center"
+      backgroundColor="gray.200"
+    >
+      <Flex 
+        className="wrapper" 
+        bg="orange.500" 
+        p="2em 1em"
+        borderRadius="0.5em"
+        direction="column"
+      >
+        <Heading as="h5" size="1x1" fontSize="xl" color="white" isTruncated>Sistema de Control de Producción THP</Heading>
+        <Flex justify="center" pt="0.5em" pb="0.5em">
+          <Image width="100px" height="100px" src={LogoTHP} alt="Logo THP"></Image>
+        </Flex>
+        <Flex className="login-wrapper" width="90%" direction="column" justify="center">
+          <form onSubmit={handleSubmit} width="100%">
+            <Flex direction="column" justify="flex-start" width="100%">
+              <Text fontSize="md" color="white" width="100%">Nombre de usuario</Text>
+              <Input 
+                variant="flushed" 
+                type="text" 
+                bg="white" 
+                width="100%" 
+                placeholder="nombre de usuario"
+                pl="0.25em"
+                onChange={e => setUsername(e.target.value)}
+              />
+            </Flex>
+            <Flex direction="column" justify="flex-start">
+              <Text fontSize="md" color="white">Contraseña</Text>
+              <Flex direction="row" bg="white" >
+                <Input 
+                  variant="flushed" 
+                  type={showPwd ? "text" : "password"} 
+                  width="100%"
+                  placeholder="contraseña" 
+                  pl="0.25em"
+                  onChange={e => setPassword(e.target.value)}
+                />
+                {
+                  showPwd ? 
+                    <Button 
+                      bg="white" 
+                      onClick={() => hide_show_pwd()}
+                    >
+                      <ViewOffIcon></ViewOffIcon>
+                    </Button> :
+                    <Button 
+                      bg="white" 
+                      onClick={() => hide_show_pwd()}
+                    >
+                      <ViewIcon></ViewIcon>
+                    </Button>
+                }
+              </Flex>
+            </Flex>
+            <Flex direction="row" justify="flex-end">
+              <Button type="submit" value="Submit" bg="gray.300" mt="1.5em" rightIcon={<ArrowForwardIcon></ArrowForwardIcon>}>Entrar</Button>
+            </Flex>
+          </form>
+        </Flex>
+      </Flex>
+    </Flex>
   )
 }

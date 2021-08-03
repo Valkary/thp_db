@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 function getPassword(conn, username) {
   return new Promise((resolve, reject) => {
     conn.query("SELECT u_pass FROM thp_users WHERE u_name = ?", [username], (err, result) => {
-      return err ? reject(err) : resolve(result[0].u_pass);
+      return err ? reject(err) : resolve(result.length === 1 ? result[0].u_pass : "Error");
     });
   });
 }
@@ -29,30 +29,47 @@ const getCredentials = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  const hashed_pwd = await getPassword(conn, username);
-  console.log("* Usuario encontrado!");
-  const verifyHash = await compareHashes(password, hashed_pwd);
-  console.log("* Contraseña verificada!");
-  
-  if(verifyHash){
-    const credentials = await fetchCredentials(conn, username);
-    console.log("* Fetching credentials");
-    const { u_index, u_first_names, u_last_names, u_api_key } = credentials;
-    const [ firstNames, lastNames, apiKey ] = [ u_first_names, u_last_names, u_api_key ];
-    
-    console.log("* Enviando credenciales de la sesion...");
-
-    return {
-      status: 200,
-      credentials: { firstNames, lastNames, apiKey },
-    } 
-  } else {
+  if(username === "" || password === ""){
     return {
       status: 200,
       credentials: null,
       message: "Nombre de usuario o contraseña equivocados"
     }
+  } else {
+    const hashed_pwd = await getPassword(conn, username);
+    if(hashed_pwd !== "Error") {
+      console.log("* Usuario encontrado!");
+      const verifyHash = await compareHashes(password, hashed_pwd);
+      console.log("* Contraseña verificada!");
+      
+      if(verifyHash){
+        const credentials = await fetchCredentials(conn, username);
+        console.log("* Fetching credentials");
+        const { u_index, u_first_names, u_last_names, u_api_key } = credentials;
+        const [ firstNames, lastNames, apiKey ] = [ u_first_names, u_last_names, u_api_key ];
+        
+        console.log("* Enviando credenciales de la sesion...");
+
+        return {
+          status: 200,
+          credentials: { firstNames, lastNames, apiKey },
+        } 
+      } else {
+        return {
+          status: 200,
+          credentials: null,
+          message: "Nombre de usuario o contraseña equivocados"
+        }
+      }
+    } else {
+      return {
+        status: 200,
+        credentials: null,
+        message: "Nombre de usuario o contraseña equivocados"
+      }
+    }
   }
+  
 };
 
 export default function sendCredentials(req, res) {
