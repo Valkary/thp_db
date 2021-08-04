@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Table, Thead, Tbody, Tr, Th, Td, Heading } from "@chakra-ui/react";
 
 export default function pedidosPorCodigo({api_key}) {
   const [ pedidos, setPedidos ] = useState([]);
@@ -13,35 +14,34 @@ export default function pedidosPorCodigo({api_key}) {
 
   return (
     <div>
-      <h2>Pedidos Por Surtir</h2>
-      <table>
-        <thead>
-          <tr>
-            <th colSpan={3}>Listado de pedidos por codigo</th>
-          </tr>
-          <tr>
-            <th>Cantidad</th>
-            <th>Codigo</th>
-            <th>Completado</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Heading>Pedidos Por Surtir</Heading>
+      <Table variant="striped" colorScheme="orange" size="sm">
+        <Thead>
+          <Tr>
+            <Th colSpan={3}>Listado de pedidos por codigo</Th>
+          </Tr>
+          <Tr>
+            <Th isNumeric>Cantidad</Th>
+            <Th>Codigo</Th>
+            <Th>Completado</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {
             pedidos.map(pedido => {
               return (
-                <tr>
-                  <td>{pedido.cantidad}</td>
-                  <td>{pedido.llave_producto}</td>
-                  <td>
+                <Tr>
+                  <Td isNumeric>{pedido.cantidad}</Td>
+                  <Td>{pedido.llave_producto}</Td>
+                  <Td>
                     ✅/❌
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               );
             })
           }
-        </tbody>
-      </table>
-      
+        </Tbody>
+      </Table>
     </div>
   );
 }

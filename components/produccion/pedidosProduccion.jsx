@@ -1,46 +1,48 @@
+import { Table, Thead, Tbody, Tr, Th, Td, Heading } from "@chakra-ui/react";
+
 export default function direccionProduccion({api_key, pedidos}) {
   return (
     <div>
-      <h2>Pedidos</h2>
-      <table>
-        <thead>
-          <tr>
-            <th colSpan={4}>Consulta pedidos</th>
-          </tr>
-          <tr>
-            <th>Cantidad</th>
-            <th>Código</th>
-            <th>Pedido</th>
-            <th>Cliente</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Heading>Pedidos</Heading>
+      <Table variant="striped" colorScheme="orange" size="sm">
+        <Thead>
+          <Tr>
+            <Th colSpan={4}>Consulta pedidos</Th>
+          </Tr>
+          <Tr>
+            <Th isNumeric>Cantidad</Th>
+            <Th>Código</Th>
+            <Th isNumeric>Pedido</Th>
+            <Th>Cliente</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {
             pedidos.map(pedido => {
               return (
-                <tr key={pedido.pedido}>
-                  <td>
+                <Tr key={pedido.pedido}>
+                  <Td isNumeric>
                     {
                       pedido.quant.map(cantidad => {
                         return <div>{cantidad}</div>;
                       })
                     }
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     {
                       pedido.keys.map(key => {
                         return <div>{key}</div>;
                       })
                     }
-                  </td>
-                  <td>{pedido.pedido}</td>
-                  <td>{pedido.cliente}</td>
-                </tr>
+                  </Td>
+                  <Td isNumeric>{pedido.pedido}</Td>
+                  <Td>{pedido.cliente}</Td>
+                </Tr>
               );
             })
           }
-        </tbody>
-      </table>
+        </Tbody>
+      </Table>
     </div>
   );
 }

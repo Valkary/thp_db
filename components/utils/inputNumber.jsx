@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@chakra-ui/input";
 
 export default function inputNumber({ max, min, val }) {
   const [ quant, setQuant ] = useState(val);
@@ -12,7 +13,8 @@ export default function inputNumber({ max, min, val }) {
   }
 
   return (
-    <input 
+    <Input
+      variant="flushed" 
       type="number" 
       max={max}
       min={min} 

@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Navbar from "../components/UI/Navbar";
+import { Heading, Flex } from "@chakra-ui/react";
 
 function organizeArr(result) {
   const fetch_pedidos = result.data;
@@ -64,12 +65,22 @@ export default function produccion() {
   }, []);
 
   return (
-    <div>
-      <h1>Produccion</h1>
-      <Pedidos api_key={apiKey} pedidos={pedidos}></Pedidos>
-      <PedidosCodigo api_key={apiKey}></PedidosCodigo>
-      <ProgramacionProduccion api_key={apiKey} pedidos={pedidosProd}></ProgramacionProduccion>
+    <Flex 
+      direction="column"
+      width="100%"
+    >
+      <Flex
+        direction="column"
+        width="90%"
+        justify="center"
+        align="center"
+      >
+        <Heading>Produccion</Heading>
+        <Pedidos api_key={apiKey} pedidos={pedidos}></Pedidos>
+        <PedidosCodigo api_key={apiKey}></PedidosCodigo>
+        <ProgramacionProduccion api_key={apiKey} pedidos={pedidosProd}></ProgramacionProduccion>
+      </Flex>
       <Navbar></Navbar>
-    </div>
+    </Flex>
   );
 }

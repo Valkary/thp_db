@@ -1,43 +1,47 @@
 import InputNumber from "../utils/inputNumber";
+import { Table, Thead, Tbody, Tr, Th, Td, Button, Heading, Flex, Box, VStack } from "@chakra-ui/react";
+import { CheckIcon } from "@chakra-ui/icons";
 
 export default function direccionProduccion({api_key, pedidos}) {
   return (
     <div>
-      <h2>Producción por Programar</h2>
-      <table>
-        <thead>
-          <tr>
-            <th colSpan={5}>Programación Producción</th>
-          </tr>
-          <tr>
-            <th>Cantidad</th>
-            <th>Código</th>
-            <th>Pedido</th>
-            <th>Programar</th>
-            <th>Aceptar</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Heading>Producción por Programar</Heading>
+      <Table variant="striped" colorScheme="orange" size="sm">
+        <Thead>
+          <Tr>
+            <Th colSpan={5}>Programación Producción</Th>
+          </Tr>
+          <Tr>
+            <Th isNumeric>Cantidad</Th>
+            <Th>Código</Th>
+            <Th isNumeric>Pedido</Th>
+            <Th isNumeric>Programar</Th>
+            <Th>Aceptar</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {
             pedidos.map(pedido => {
               return (
-                <tr key={pedido.pedido}>
-                  <td>
-                    {
-                      pedido.quant.map((cantidad, index) => {
-                        return <div key={`show_quant_${index}`}>{cantidad}</div>;
-                      })
-                    }
-                  </td>
-                  <td>
+                <Tr key={pedido.pedido}>
+                  <Td isNumeric padding="0">
+                    <VStack direction="column" height="100%">
+                      {
+                        pedido.quant.map((cantidad, index) => {
+                          return <Box key={`show_quant_${index}`} height="100%">{cantidad}</Box>;
+                        })
+                      }
+                    </VStack>
+                  </Td>
+                  <Td>
                     {
                       pedido.keys.map(key => {
                         return <div>{key}</div>;
                       })
                     }
-                  </td>
-                  <td>{pedido.pedido}</td>
-                  <td>
+                  </Td>
+                  <Td isNumeric>{pedido.pedido}</Td>
+                  <Td isNumeric>
                     {
                       pedido.quant.map((cantidad, index) => {
                         return ( 
@@ -47,16 +51,16 @@ export default function direccionProduccion({api_key, pedidos}) {
                         );
                       })
                     }
-                  </td>
-                  <td>
-                    <button>✔</button>
-                  </td>
-                </tr>
+                  </Td>
+                  <Td>
+                    <Button><CheckIcon></CheckIcon></Button>
+                  </Td>
+                </Tr>
               );
             })
           }
-        </tbody>
-      </table>
+        </Tbody>
+      </Table>
     </div>
   );
 }
