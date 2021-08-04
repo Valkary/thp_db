@@ -28,9 +28,9 @@ export default function pedidosPorCodigo({api_key}) {
         </Thead>
         <Tbody>
           {
-            pedidos.map(pedido => {
+            pedidos.map((pedido, index) => {
               return (
-                <Tr>
+                <Tr key={index}>
                   <Td isNumeric>{pedido.cantidad}</Td>
                   <Td>{pedido.llave_producto}</Td>
                   <Td>

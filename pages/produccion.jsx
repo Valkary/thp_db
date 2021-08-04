@@ -21,11 +21,12 @@ function organizeArr(result) {
       }
 
       curr_pedido = fetch_pedidos[i].no_pedido;
-      curr_pedido_obj = { keys: [], quant: [] };
+      curr_pedido_obj = { keys: [], quant: [], prod_index: [] };
       curr_pedido_obj = {
         cliente: fetch_pedidos[i].cliente,
         pedido: fetch_pedidos[i].no_pedido,
         keys: [fetch_pedidos[i].llave_producto],
+        prod_index: [fetch_pedidos[i].prod_index],
         quant: [fetch_pedidos[i].cantidad]
       }
 
@@ -36,6 +37,7 @@ function organizeArr(result) {
       curr_pedido_obj = {
         ...curr_pedido_obj,
         keys: [...curr_pedido_obj.keys, fetch_pedidos[i].llave_producto],
+        prod_index: [...curr_pedido_obj.prod_index, fetch_pedidos[i].prod_index],
         quant: [...curr_pedido_obj.quant, fetch_pedidos[i].cantidad]
       }
 
