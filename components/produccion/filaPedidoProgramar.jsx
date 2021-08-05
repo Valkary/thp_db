@@ -28,6 +28,7 @@ function pedidoReducer(state, action) {
         indexes_productos: prod_index.map(key => {
           return key;
         }),
+        button_disable: true
       }
 
       return {
@@ -40,13 +41,17 @@ function pedidoReducer(state, action) {
         return index === action.index ? cantidad : programado;
       });
 
-      return {
+      const new_state = {
         ...state,
         cant_programados: nuevos_programados,
       }
+
+      return {
+        ...new_state,
+        button_disable: new_state.cant_programados.some(programado => programado > 0) ? false : true 
+      }
     }
   }
-  
 }
 
 export default function filaPedidoProgramar({ api_key, pedido }) {
@@ -64,6 +69,7 @@ export default function filaPedidoProgramar({ api_key, pedido }) {
     indexes_productos: pedido.prod_index.map(key => {
       return key;
     }),
+    button_disable: true
   }
 
   const handleChange = (evt, index) => {
@@ -104,24 +110,26 @@ export default function filaPedidoProgramar({ api_key, pedido }) {
   return (
     <Tr key={no_pedido}>
       <Td isNumeric padding="0">
-        <VStack direction="column" height="100%">
+        <VStack direction="column" height="100%" align="stretch">
           {
             state_pedido.cant_productos.map((cantidad, index) => {
-              return <Box key={`show_quant_${index}`} height="100%">{cantidad}</Box>;
+              return <Box key={`show_quant_${index}`} height="1em">{cantidad}</Box>;
             })
           }
         </VStack>
       </Td>
       <Td>
+        <VStack direction="column" height="100%" align="stretch">
         {
           llaves_productos.map(key => {
             return <div key={`${no_pedido}-${key}`}>{key}</div>;
           })
         }
+        </VStack>
       </Td>
-      <Td isNumeric>{no_pedido}</Td>
-      <Td isNumeric>
-        <VStack>
+      <Td isNumeric>#{no_pedido}</Td>
+      <Td isNumeric width="0.3em">
+        <VStack justify="flex-end" align="flex-end">
         {
           cant_productos.map((cantidad, index) => {
             return ( 
@@ -130,7 +138,8 @@ export default function filaPedidoProgramar({ api_key, pedido }) {
                 variant="flushed" 
                 key={`input_quant_${index}`} 
                 min={0}
-                maxWidth="1em" 
+                width="100%" 
+                maxHeight="1em"
                 margin="0"
                 padding="0"
                 max={cantidad} 
@@ -143,7 +152,12 @@ export default function filaPedidoProgramar({ api_key, pedido }) {
         </VStack>
       </Td>
       <Td>
-        <Button onClick={() => createProdOrder()}><CheckIcon></CheckIcon></Button>
+        <Button 
+          onClick={() => createProdOrder()} 
+          minHeight="100%" 
+          width="100%"
+          disabled={state_pedido.button_disable}
+        ><CheckIcon></CheckIcon></Button>
       </Td>
     </Tr>
   );

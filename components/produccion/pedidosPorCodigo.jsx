@@ -18,11 +18,13 @@ export default function pedidosPorCodigo({api_key}) {
       <Table variant="striped" colorScheme="orange" size="sm">
         <Thead>
           <Tr>
-            <Th colSpan={3}>Listado de pedidos por codigo</Th>
+            <Th colSpan={5}>Listado de pedidos por codigo</Th>
           </Tr>
           <Tr>
-            <Th isNumeric>Cantidad</Th>
+            <Th isNumeric>Total</Th>
             <Th>Codigo</Th>
+            <Th isNumeric>Producidos</Th>
+            <Th isNumeric>Faltantes</Th>
             <Th>Completado</Th>
           </Tr>
         </Thead>
@@ -33,6 +35,8 @@ export default function pedidosPorCodigo({api_key}) {
                 <Tr key={index}>
                   <Td isNumeric>{pedido.cantidad}</Td>
                   <Td>{pedido.llave_producto}</Td>
+                  <Td></Td>
+                  <Td></Td>
                   <Td>
                     ✅/❌
                   </Td>

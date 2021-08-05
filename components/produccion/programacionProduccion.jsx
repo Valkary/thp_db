@@ -3,6 +3,7 @@ import FilaPedidoProgramar from "./filaPedidoProgramar";
 
 export default function direccionProduccion({api_key, pedidos}) {
   return (
+    <div>
     <Flex width="100%" direction="column" justify="center" align="center">
       <Heading>Producción por Programar</Heading>
       <Table variant="striped" colorScheme="orange" size="sm">
@@ -13,21 +14,22 @@ export default function direccionProduccion({api_key, pedidos}) {
           <Tr>
             <Th isNumeric>Cantidad</Th>
             <Th>Código</Th>
-            <Th isNumeric>Pedido</Th>
+            <Th isNumeric>No. Pedido</Th>
             <Th isNumeric>Programar</Th>
             <Th>Aceptar</Th>
           </Tr>
         </Thead>
         <Tbody>
           {
-            pedidos.map((pedido) => {
+            pedidos.map((pedido, index) => {
               return (
-                <FilaPedidoProgramar pedido={pedido} api_key={api_key}></FilaPedidoProgramar>
+                <FilaPedidoProgramar pedido={pedido} api_key={api_key} key={`pedido_row_${index}`}></FilaPedidoProgramar>
               );
             })
           }
         </Tbody>
       </Table>
     </Flex>
+    </div>
   );
 }
