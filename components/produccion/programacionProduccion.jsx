@@ -1,9 +1,9 @@
-import { Table, Thead, Tbody, Tr, Th, Td, Button, Heading, Flex, Box, VStack } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Heading, Flex } from "@chakra-ui/react";
 import FilaPedidoProgramar from "./filaPedidoProgramar";
 
 export default function direccionProduccion({api_key, pedidos}) {
   return (
-    <div>
+    <Flex width="100%" direction="column" justify="center" align="center">
       <Heading>Producción por Programar</Heading>
       <Table variant="striped" colorScheme="orange" size="sm">
         <Thead>
@@ -28,6 +28,6 @@ export default function direccionProduccion({api_key, pedidos}) {
           }
         </Tbody>
       </Table>
-    </div>
+    </Flex>
   );
 }

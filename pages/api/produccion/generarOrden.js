@@ -15,8 +15,6 @@ export default function generarOrdenProducction(req, res) {
 
     if(session.verified) {
       const { no_pedido, prod_indexes, prod_quants } = req.body.api_order;
-      console.log(req.body);
-      console.log(no_pedido, prod_indexes, prod_quants);
 
       let query_arr = [];
 
@@ -26,7 +24,7 @@ export default function generarOrdenProducction(req, res) {
 
       const result = await insertRow(query_arr);
 
-      console.log(result);
+      res.status(200).send({ success: true, ...result });
     }
   });
 }
