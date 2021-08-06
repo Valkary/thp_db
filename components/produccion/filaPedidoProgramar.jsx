@@ -38,7 +38,11 @@ function pedidoReducer(state, action) {
     case "update": {
       const cantidad = action.payload
       const nuevos_programados = state.cant_programados.map((programado, index) => {
-        return index === action.index ? cantidad : programado;
+        if(index === action.index) {
+          return cantidad > state.cant_productos[index] ? state.cant_productos[index] : cantidad; 
+        } else {
+          return programado;
+        }
       });
 
       const new_state = {

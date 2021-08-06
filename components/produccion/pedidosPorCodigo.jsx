@@ -33,12 +33,14 @@ export default function pedidosPorCodigo({api_key}) {
             pedidos.map((pedido, index) => {
               return (
                 <Tr key={index}>
-                  <Td isNumeric>{pedido.cantidad}</Td>
-                  <Td>{pedido.llave_producto}</Td>
-                  <Td></Td>
-                  <Td></Td>
+                  <Td isNumeric>{pedido.suma_total}</Td>
+                  <Td>{pedido.prod_key}</Td>
+                  <Td isNumeric>{pedido.total_producidos}</Td>
+                  <Td isNumeric>{pedido.total_faltantes}</Td>
                   <Td>
-                    ✅/❌
+                    {
+                      pedido.total_faltantes === 0 ? "✅" : "❌"
+                    }
                   </Td>
                 </Tr>
               );
